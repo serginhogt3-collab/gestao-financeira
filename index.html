@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1117">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gestão Financeira">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Gestão e Planejamento Financeiro</title>
+<style>
+:root{
+ --bg:#081017;--panel:#101923;--panel2:#162331;--line:#26384a;--text:#f5f7f9;--muted:#9aabba;
+ --red:#ff7c87;--green:#69e3a2;--amber:#f2c36f;--blue:#6eb7ff;--purple:#a78bfa;
+ --shadow:0 14px 40px rgba(0,0,0,.24);--r:20px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:radial-gradient(circle at top,#0d1b28 0,#081017 34%,#060c12 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit} button{cursor:pointer}
+.app{max-width:850px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 14px calc(40px + env(safe-area-inset-bottom))}
+.header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.brand h1{font-size:24px;line-height:1.05;margin:0} .brand p{margin:6px 0 0;color:#9fb1c5;font-size:14px;font-weight:800;letter-spacing:.04em}
+.headerBtns{display:flex;gap:8px} .round{border:1px solid var(--line);background:#18232e;color:white;border-radius:50%;width:44px;height:44px;font-size:18px}
+.periods{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:16px 0 12px}
+.periods select{background:#111b25;color:white;border:1px solid var(--line);border-radius:13px;padding:11px;font-weight:800}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{border:1px solid var(--line);background:linear-gradient(145deg,#111b25,#0d151d);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);min-height:122px}
+.kpi.red{background:linear-gradient(145deg,#26151b,#16131a);border-color:#5b303b} .kpi.amber{background:linear-gradient(145deg,#282116,#171914);border-color:#5a4b2d} .kpi.green{background:linear-gradient(145deg,#0f2820,#0c1917);border-color:#235a48}
+.kpi.availableGreen{background:linear-gradient(145deg,#10291f,#0c1917);border-color:#315c49}
+.kpi.availableAmber{background:linear-gradient(145deg,#2b2517,#181812);border-color:#66542d}
+.kpi.availableRed{background:linear-gradient(145deg,#2a151a,#16131a);border-color:#67343e}
+.kpi.availableGreen .kvalue{color:#9be7bd}
+.kpi.availableAmber .kvalue{color:#f4d28a}
+.kpi.availableRed .kvalue{color:#ff9fa9}
+
+.khead{font-size:12px;font-weight:800;color:#d4dbe2;display:flex;justify-content:space-between;gap:8px} .kvalue{font-size:23px;font-weight:900;margin-top:14px}
+.redText{color:var(--red)} .greenText{color:var(--green)} .amberText{color:var(--amber)} .blueText{color:var(--blue)}
+.progress{height:7px;border-radius:99px;background:#2a2830;margin-top:11px;overflow:hidden} .progress i{display:block;height:100%;border-radius:inherit;background:var(--red);width:0}
+.alert{margin-top:12px;border-radius:15px;border:1px solid #65333e;background:#2c161d;padding:12px 14px;color:#f0b7be;font-size:13px;line-height:1.45}
+.section{margin-top:22px} .sectionTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px} .sectionTitle h2{font-size:20px;margin:0} .sectionTitle button{border:0;background:transparent;color:#83bfff}
+.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.action{border:1px solid var(--line);border-radius:18px;padding:14px 10px;min-height:130px;color:white;background:#10243a;text-align:center} .action.purple{background:#211d3c} .action.green{background:#123326} .action.amber{background:#372b15}
+.action .ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;margin:0 auto 9px;background:#2862a0;font-size:25px}.action.fixed{background:#2a2518}.action.fixed .ico{background:#8a722c} .action.purple .ico{background:#6242c7} .action.green .ico{background:#188156} .action.amber .ico{background:#956c25}
+.action strong{display:block;font-size:14px} .action small{display:block;color:#b7c4d1;margin-top:5px;line-height:1.3;font-size:11px}
+.cardGrid{display:grid;grid-template-columns:1.05fr 1fr;gap:10px}
+.control{background:#0e1a24;border:1px solid #274154;border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.control h3{font-size:15px;margin:0} .control .sub{font-size:11px;color:var(--muted);margin:4px 0 12px}
+.line{display:flex;justify-content:space-between;gap:10px;margin:8px 0;font-size:13px} .line span:first-child{color:#b5c1cc} .divider{height:1px;background:#30404d;margin:11px 0}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900;background:#133c60;color:#9fd1ff}
+.installments{display:grid;gap:8px;max-height:340px;overflow:auto} .inst{background:#111c27;border:1px solid #26394b;border-radius:14px;padding:11px}
+.instTop{display:flex;justify-content:space-between;gap:8px;align-items:center} .inst strong{font-size:13px} .inst small{display:block;color:#aebdca;margin-top:5px;line-height:1.35}
+.commitments{display:grid;gap:8px} .commit{display:grid;grid-template-columns:1fr auto;gap:10px;background:#101923;border:1px solid #263849;border-radius:16px;padding:13px;align-items:center}
+.commit strong{display:block;font-size:14px} .commit small{display:block;color:#9aabba;margin-top:4px} .right{text-align:right} .status{display:inline-block;margin-top:5px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900} .PAGO{background:#143725;color:#7fe1a4} .PENDENTE{background:#4a3719;color:#f2c36f} .PARCIAL{background:#4a3719;color:#f2c36f} .ATRASADO{background:#4d2028;color:#ff8b96}
+.cash{display:grid;grid-template-columns:repeat(4,1fr);gap:8px} .mini{background:#101923;border:1px solid #263849;border-radius:14px;padding:11px}.resultMini.resultPositive{background:#10291f;border-color:#315c49}.resultMini.resultPositive b{color:#9be7bd}.resultMini.resultNegative{background:#2a151a;border-color:#6c333d}.resultMini.resultNegative b{color:#ff9fa9}.resultMini.resultZero{background:#101923;border-color:#263849}.resultMini.resultZero b{color:#d9e4ed} .mini label{display:block;color:#91a3b3;font-size:10px;text-transform:uppercase;font-weight:900} .mini b{display:block;margin-top:7px;font-size:13px}
+dialog{border:0;padding:0;background:transparent;color:white;width:min(690px,calc(100% - 18px));max-height:94vh} dialog::backdrop{background:rgba(0,0,0,.75)} .modal{background:#09121a;border:1px solid var(--line);border-radius:22px;overflow:hidden} .mhead{display:flex;justify-content:space-between;align-items:center;padding:16px;background:#111b25} .mhead h3{margin:0;font-size:17px} .close{background:transparent;border:0;color:#9fb0bf;font-size:27px} .mbody{padding:17px;max-height:80vh;overflow:auto}
+.field{margin-bottom:13px} label{display:block;color:#98a9b8;font-size:11px;font-weight:800;margin-bottom:6px} input,select,textarea{width:100%;background:#111b25;color:white;border:1px solid #2b3c4c;border-radius:12px;padding:12px 13px;outline:none} textarea{min-height:75px;resize:vertical} .row{display:grid;grid-template-columns:1fr 1fr;gap:10px} .primary{width:100%;border:0;border-radius:14px;padding:14px;background:#355f86;color:white;font-weight:900} .secondary{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;background:#111b25;color:white;font-weight:800} .hint{color:#91a3b3;font-size:12px;line-height:1.45} .detail{background:#111b25;border:1px solid #2b3c4c;border-radius:14px;padding:13px;margin-bottom:13px}
+.toast{display:none;position:fixed;z-index:99;left:50%;bottom:18px;transform:translateX(-50%);background:#090f14;border:1px solid #304254;border-radius:14px;padding:12px 15px;max-width:92%;font-size:13px} .hidden{display:none!important}
+.installHint{font-size:12px;color:#99acbc;line-height:1.5}
+.historyList{display:grid;gap:8px}
+.historyItem{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:#101923;border:1px solid #263849;border-radius:16px;padding:13px}
+.historyMain strong{display:block;font-size:14px}
+.historyMain small{display:block;color:#9aabba;margin-top:4px;line-height:1.4}
+.historyValue{text-align:right;font-weight:900;font-size:14px}
+.historyActions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}
+.smallBtn{border:1px solid #33485c;background:#142230;color:#cfe1f2;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:900}
+.smallBtn.danger{border-color:#67313a;background:#30171d;color:#ff9aa4}
+.historyBadge{display:inline-flex;margin-left:6px;border-radius:999px;padding:3px 6px;font-size:9px;font-weight:900;background:#21394b;color:#9bc4e6}
+.historyDetails{border:0}
+.historyDetails>summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;font-weight:900;
+  user-select:none;padding:2px 0
+}
+.historyDetails>summary::-webkit-details-marker{display:none}
+.historySummaryLeft{display:flex;align-items:center;gap:9px}
+.historyChevron{
+  width:26px;height:26px;border-radius:8px;background:#17222b;
+  border:1px solid #2d3d48;display:flex;align-items:center;
+  justify-content:center;transition:transform .2s ease
+}
+.historyDetails[open] .historyChevron{transform:rotate(180deg)}
+.historyCount{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:24px;height:24px;padding:0 7px;border-radius:999px;
+  background:#17222b;border:1px solid #2d3d48;color:#aebbc5;
+  font-size:11px
+}
+.historyBody{padding-top:12px}
+
+.dangerBox{background:#2d171c;border:1px solid #67313a;border-radius:13px;padding:11px;color:#efafb6;font-size:12px;line-height:1.45;margin-bottom:13px}
+.fixedList{display:grid;gap:8px;margin-bottom:14px}
+.fixedItem{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:#1d1a12;border:1px solid #4d4329;border-radius:14px;padding:11px}
+.fixedItem strong{display:block;font-size:13px;color:#eadb9d}
+.fixedItem small{display:block;color:#aa9f7d;margin-top:4px}
+.kpiMiniBtn{margin-top:10px;border:1px solid #356a57;background:#153128;color:#a9e7c4;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:900;cursor:pointer}
+.reserveList{display:grid;gap:8px;margin-bottom:14px}
+.reserveItem{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:#10231c;border:1px solid #2c5647;border-radius:14px;padding:11px}
+.reserveItem strong{display:block;font-size:13px;color:#b8ebcf}
+.reserveItem small{display:block;color:#8eae9f;margin-top:4px}
+.reserveBalance{font-weight:900;color:#9be7bd;text-align:right}
+.reserveWithdrawBtn{background:#6b313b;border-color:#88414d;color:#fff}
+.reserveWithdrawBtn:hover{background:#7a3945}
+.busyOverlay{position:fixed;inset:0;z-index:9998;background:rgba(4,7,8,.74);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}
+.busyOverlay.hidden{display:none}
+.busyBox{width:min(330px,92vw);background:#14191a;border:1px solid #31413d;border-radius:18px;padding:22px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.48)}
+.busySpinner{width:38px;height:38px;margin:0 auto 14px;border:4px solid #293431;border-top-color:#9be7bd;border-radius:50%;animation:gfspin .8s linear infinite}
+@keyframes gfspin{to{transform:rotate(360deg)}}
+.statusIcon{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:27px;font-weight:1000}
+.statusIcon.ok{background:#153128;color:#9be7bd;border:1px solid #356a57}
+.statusIcon.err{background:#351a20;color:#ff9fa9;border:1px solid #6b313b}
+.statusMessage{text-align:center;line-height:1.45;color:#d9dfdc}
+.reserveEditBalance{padding:12px;border-radius:12px;background:#10231c;border:1px solid #2c5647;margin-bottom:12px}
+.reserveEditBalance strong{color:#9be7bd;font-size:18px}
+
+input[data-money="1"]{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.2px;
+}
+
+
+
+
+@media(max-width:640px){.actions{grid-template-columns:1fr 1fr}.cardGrid{grid-template-columns:1fr}.cash{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="busyOverlay" class="busyOverlay hidden" aria-live="polite">
+  <div class="busyBox">
+    <div class="busySpinner"></div>
+    <strong id="busyTitle">Processando...</strong>
+    <div id="busyText" class="hint" style="margin-top:8px">Aguarde. Não feche esta tela.</div>
+  </div>
+</div>
+<div class="app">
+  <div class="header">
+    <div class="brand"><h1>Gestão e Planejamento Financeiro</h1><p id="periodLabel">CARREGANDO...</p></div>
+    <div class="headerBtns"><button class="round" title="Atualizar agora" onclick="forceRefresh()">↻</button><button id="installBtn" class="round" title="Instalar no celular">⇩</button><button class="round" onclick="openSettings()">⚙</button></div>
+  </div>
+
+  <div class="periods"><select id="viewYear"></select><select id="viewMonth"></select></div>
+
+  <div class="kpis">
+    <div class="kpi red"><div class="khead"><span id="spendTitle">Gastos no cartão</span><span>›</span></div><div id="spendValue" class="kvalue redText">—</div><div class="progress"><i id="spendBar"></i></div><div id="spendPct" class="hint" style="margin-top:7px;text-align:right">—</div></div>
+    <div id="availableCard" class="kpi availableRed"><div class="khead"><span>Disponível para gastar</span><span>›</span></div><div id="availableValue" class="kvalue redText">—</div><div class="progress"><i id="availableBar"></i></div><div id="availablePct" class="hint" style="margin-top:7px;text-align:right">—</div></div>
+    <div class="kpi amber" onclick="openInvoiceDetails()"><div class="khead"><span id="invoiceTitle">Fatura a pagar</span><span>›</span></div><div id="invoiceValue" class="kvalue amberText">—</div><div id="invoiceDue" class="hint" style="margin-top:8px">—</div></div>
+    <div class="kpi green"><div class="khead"><span>Reservas e objetivos</span><span>›</span></div><div id="reserveValue" class="kvalue greenText">—</div><button class="kpiMiniBtn" type="button" onclick="openReserves()">Gerenciar reservas</button></div>
+  </div>
+
+  <div id="metaAlert" class="alert">Carregando controle mensal...</div>
+
+  <div class="section">
+    <div class="sectionTitle"><h2>Resumo financeiro do mês</h2></div>
+    <div class="cash">
+      <div class="mini"><label>Total de entradas do mês</label><b id="cashEntries">—</b></div>
+      <div class="mini"><label>Total de despesas do mês</label><b id="cashExpenses">—</b></div>
+      <div class="mini resultMini" id="cashResultCard"><label>Resultado do mês</label><b id="cashResult">—</b></div>
+      <div class="mini"><label>Receita acumulada no ano</label><b id="cashAnnual">—</b></div>
+    </div>
+    <div class="hint" style="margin-top:9px">
+      Resultado = entradas do mês − despesas do mês. O cartão é contabilizado na competência em que o gasto ocorre, sem duplicar a fatura paga no mês seguinte.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle"><h2>Lançamentos</h2></div>
+    <div class="actions">
+      <button class="action" onclick="openExpense()"><div class="ico">＋</div><strong>Novo gasto</strong><small>À vista consome o valor integral no mês</small></button>
+      <button class="action purple" onclick="openInstallment()"><div class="ico">▣</div><strong>Compra parcelada</strong><small>Somente a parcela mensal consome a meta</small></button>
+      <button class="action green" onclick="openPayment()"><div class="ico">✓</div><strong>Confirmar pagamento</strong><small>Marca fatura ou compromisso como pago</small></button>
+      <button class="action amber" onclick="openIncome()"><div class="ico">$</div><strong>Outra receita</strong><small>Lançar entradas extras</small></button>
+      <button class="action fixed" onclick="openFixedExpenses()"><div class="ico">↻</div><strong>Gastos fixos</strong><small>Adicionar ou excluir recorrências do Itaú</small></button>
+    </div>
+  </div>
+
+  <div class="section">
+    <details id="historyDetails" class="historyDetails">
+      <summary>
+        <span class="historySummaryLeft">
+          <span class="historyChevron">⌄</span>
+          <span>Histórico de lançamentos do mês</span>
+        </span>
+        <span id="historyCount" class="historyCount">—</span>
+      </summary>
+
+      <div class="historyBody">
+        <div class="sectionTitle" style="margin-bottom:8px">
+          <div class="hint" id="historyPeriodHint">
+            Somente lançamentos destinados ao mês selecionado.
+          </div>
+          <button type="button" onclick="loadHistory(true)">Atualizar</button>
+        </div>
+
+        <div class="hint" style="margin-bottom:9px">
+          Você pode editar ou excluir lançamentos feitos pelo aplicativo.
+          Compras antigas importadas da planilha permanecem protegidas.
+        </div>
+
+        <div id="historyList" class="historyList">
+          <div class="hint">Toque acima para carregar o histórico deste mês.</div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle"><h2>Situação do cartão</h2></div>
+    <div class="cardGrid">
+      <div class="control">
+        <h3>① Controle 1 — Impacto mensal</h3><div class="sub">O que realmente pesa no orçamento do mês.</div>
+        <div class="line"><span>Gastos fixos do cartão</span><b id="mFixed">—</b></div>
+        <div class="line"><span>Parcelas do mês</span><b id="mInstallments">—</b></div>
+        <div class="line"><span>Compras à vista / avulsas</span><b id="mOneOff">—</b></div>
+        <div class="divider"></div>
+        <div class="line"><span><b>Total comprometido</b></span><b id="mTotal" class="amberText">—</b></div>
+        <div class="line"><span>Meta mensal</span><b id="mMeta">—</b></div>
+        <div class="line"><span>Disponível para gastar</span><b id="mAvailable" class="greenText">—</b></div>
+        <div class="progress"><i id="mBar" style="background:var(--amber)"></i></div>
+        <div id="mProgressText" class="hint" style="margin-top:7px">—</div>
+      </div>
+      <div class="control">
+        <h3>② Controle 2 — Parcelamentos em andamento</h3><div class="sub">Ordenado por parcelas restantes: os parcelamentos mais próximos de terminar aparecem primeiro.</div>
+        <div id="installmentList" class="installments"><div class="hint">Carregando...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle"><h2>Compromissos do mês</h2></div>
+    <div id="commitments" class="commitments"><div class="hint">Carregando...</div></div>
+  </div>
+</div>
+
+<!-- dialogs -->
+<dialog id="expenseDialog"><div class="modal"><div class="mhead"><h3>Novo gasto</h3><button class="close" onclick="expenseDialog.close()">×</button></div><form id="expenseForm" class="mbody">
+<div class="row"><div class="field"><label>Data</label><input id="expDate" type="date" required></div><div class="field"><label>Valor</label><input id="expValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" required placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23"></div></div>
+<div class="field"><label>Descrição</label><input id="expDesc" required></div><div class="field"><label>Categoria</label><select id="expCategory"><option>Alimentação</option><option>Transporte</option><option>Veículo</option><option>Casa</option><option>Saúde</option><option>Pet</option><option>Lazer</option><option>Compras</option><option>Outros</option></select></div>
+<div class="field"><label>Pagamento</label><select id="expPayment"><option>Cartão Itaú</option><option>PIX</option><option>Débito</option><option>Dinheiro</option><option>Outro</option></select></div>
+<div class="field"><label>Observação</label><textarea id="expObs"></textarea></div><button class="primary" type="submit">Registrar gasto</button>
+</form></div></dialog>
+
+<dialog id="installmentDialog"><div class="modal"><div class="mhead"><h3>Compra parcelada</h3><button class="close" onclick="installmentDialog.close()">×</button></div><form id="installmentForm" class="mbody">
+<div class="row"><div class="field"><label>Data da compra</label><input id="instDate" type="date" required></div><div class="field"><label>Valor total</label><input id="instTotal" type="text" inputmode="decimal" autocomplete="off" data-money="1" required placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23"></div></div>
+<div class="field"><label>Descrição</label><input id="instDesc" required></div><div class="row"><div class="field"><label>Parcelas</label><input id="instCount" type="number" min="2" max="48" value="2" required></div><div class="field"><label>Categoria</label><select id="instCategory"><option>Compras</option><option>Veículo</option><option>Casa</option><option>Saúde</option><option>Lazer</option><option>Outros</option></select></div></div>
+<div id="instPreview" class="detail"><div class="hint">Informe o valor e a quantidade de parcelas.</div></div><div class="hint" style="margin-bottom:13px">Exemplo: R$ 1.200,00 em 10x consome aproximadamente R$ 120,00 da meta em cada mês, não R$ 1.200,00 de uma vez.</div><button class="primary" type="submit">Registrar compra parcelada</button>
+</form></div></dialog>
+
+<dialog id="paymentDialog"><div class="modal"><div class="mhead"><h3>Confirmar pagamento</h3><button class="close" onclick="paymentDialog.close()">×</button></div><form id="paymentForm" class="mbody">
+<div class="row">
+  <div class="field"><label>Competência</label><select id="payCompetence"></select></div>
+  <div class="field"><label>Compromisso</label><select id="payCommitment"></select></div>
+</div>
+<div class="hint" style="margin:-4px 0 12px">Disponível de SET/2026 em diante. Itens já quitados não aparecem. Compromissos sem valor fechado continuam disponíveis para permitir pagamento antecipado.</div>
+<div id="payBackendWarning" class="dangerBox hidden"></div>
+<div id="payManualFields" class="field hidden"><label>Descrição do item manual</label><input id="payManualDesc" placeholder="Ex.: taxa extraordinária, manutenção, documento"></div>
+<div id="payInfo" class="detail"><div class="hint">Selecione um compromisso.</div></div>
+<div class="row"><div class="field"><label>Data do pagamento</label><input id="payDate" type="date" required></div><div class="field"><label>Valor pago</label><input id="payValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" required placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23"></div></div>
+<div class="field"><label>Observação</label><textarea id="payObs"></textarea></div><button class="primary" type="submit">Confirmar pagamento</button>
+</form></div></dialog>
+
+<dialog id="fixedDialog"><div class="modal"><div class="mhead"><h3>Gastos fixos do cartão</h3><button class="close" onclick="fixedDialog.close()">×</button></div><div class="mbody">
+<div class="row"><div class="field"><label>Ano de impacto</label><select id="fixedYear"></select></div><div class="field"><label>Mês de impacto</label><select id="fixedMonth"></select></div></div>
+<div class="hint" style="margin:-4px 0 12px">A competência acima define quando o gasto começa a consumir a meta. Ao excluir, os meses anteriores são preservados.</div>
+<div id="fixedList" class="fixedList"><div class="hint">Carregando gastos fixos...</div></div>
+<div class="detail">
+  <div style="font-weight:900;margin-bottom:10px;color:#eadb9d">Adicionar novo gasto fixo</div>
+  <div class="field"><label>Descrição</label><input id="fixedDesc" placeholder="Ex.: assinatura, seguro, plano"></div>
+  <div class="field"><label>Valor mensal</label><input id="fixedValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23"></div>
+  <button class="primary" type="button" onclick="addFixedExpense()">Adicionar gasto fixo</button>
+</div>
+</div></div></dialog>
+
+<dialog id="reserveDialog"><div class="modal">
+<div class="mhead"><h3>Reservas e objetivos</h3><button class="close" onclick="reserveDialog.close()">×</button></div>
+<div class="mbody">
+
+<div class="detail" style="margin-bottom:14px">
+  <div class="sectionTitle" style="margin:0 0 10px">
+    <h2 style="font-size:15px">Saldos atuais</h2>
+    <button type="button" onclick="loadReserves()">Atualizar</button>
+  </div>
+  <div id="reservePeriodInfo" class="hint" style="margin-bottom:10px">—</div>
+  <div id="reserveList" class="reserveList"><div class="hint">Carregando reservas...</div></div>
+</div>
+
+<div class="detail" style="margin-bottom:14px">
+  <div style="font-weight:900;margin-bottom:10px;color:#b8ebcf">Adicionar saldo a uma reserva</div>
+
+  <div class="field">
+    <label>Reserva</label>
+    <select id="reserveExisting"></select>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Data do aporte</label>
+      <input id="reserveAddDate" type="date">
+    </div>
+    <div class="field">
+      <label>Valor</label>
+      <input id="reserveAddValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Observação</label>
+    <textarea id="reserveAddNote"></textarea>
+  </div>
+
+  <button class="primary" type="button" onclick="addReserveBalance()">Adicionar saldo</button>
+</div>
+
+<div class="detail" style="margin-bottom:14px">
+  <div style="font-weight:900;margin-bottom:10px;color:#ffadb5">Retirar saldo de uma reserva</div>
+
+  <div class="field">
+    <label>Reserva</label>
+    <select id="reserveWithdrawExisting"></select>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Data da retirada</label>
+      <input id="reserveWithdrawDate" type="date">
+    </div>
+    <div class="field">
+      <label>Valor da retirada</label>
+      <input id="reserveWithdrawValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Observação</label>
+    <textarea id="reserveWithdrawNote"></textarea>
+  </div>
+
+  <div class="hint" style="margin-bottom:10px">
+    O sistema não permite retirar um valor maior que o saldo disponível da reserva.
+  </div>
+
+  <button class="primary reserveWithdrawBtn" type="button" onclick="withdrawReserveBalance()">Retirar saldo</button>
+</div>
+
+<div class="detail">
+  <div style="font-weight:900;margin-bottom:10px;color:#b8ebcf">Criar nova reserva</div>
+
+  <div class="field">
+    <label>Nome da reserva</label>
+    <input id="reserveNewName" placeholder="Ex.: Viagem, Emergência, Novo carro">
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Data de início</label>
+      <input id="reserveNewDate" type="date">
+    </div>
+    <div class="field">
+      <label>Saldo inicial</label>
+      <input id="reserveNewValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Observação</label>
+    <textarea id="reserveNewNote"></textarea>
+  </div>
+
+  <button class="primary" type="button" onclick="createReserve()">Criar reserva</button>
+</div>
+
+</div></dialog>
+
+<dialog id="incomeDialog"><div class="modal"><div class="mhead"><h3>Outra receita</h3><button class="close" onclick="incomeDialog.close()">×</button></div><div class="mbody">
+
+<div class="detail" style="margin-bottom:14px">
+  <div style="font-weight:900;margin-bottom:10px">Nova receita</div>
+  <form id="incomeForm">
+    <div class="row"><div class="field"><label>Data</label><input id="incDate" type="date" required></div><div class="field"><label>Valor</label><input id="incValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" required placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23"></div></div>
+    <div class="field"><label>Descrição</label><input id="incDesc" required></div>
+    <div class="field"><label>Observação</label><textarea id="incObs"></textarea></div>
+    <button class="primary" type="submit">Registrar receita</button>
+  </form>
+</div>
+
+<div class="detail">
+  <div class="sectionTitle" style="margin:0 0 10px">
+    <h2 style="font-size:15px">Receitas já lançadas</h2>
+    <button type="button" onclick="loadIncomeItems()">Atualizar</button>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Ano</label>
+      <select id="incomeYear"></select>
+    </div>
+    <div class="field">
+      <label>Mês</label>
+      <select id="incomeMonth"></select>
+    </div>
+  </div>
+
+  <div class="hint" style="margin-bottom:10px">
+    Esta lista lê diretamente as receitas existentes na planilha da competência selecionada e também inclui receitas criadas pelo aplicativo.
+  </div>
+
+  <div id="incomeHistoryList" class="historyList">
+    <div class="hint">Carregando receitas...</div>
+  </div>
+</div>
+
+</div></dialog>
+
+<dialog id="editDialog"><div class="modal"><div class="mhead"><h3>Editar lançamento</h3><button class="close" onclick="editDialog.close()">×</button></div><form id="editForm" class="mbody">
+<input id="editId" type="hidden"><input id="editType" type="hidden">
+<div id="editTypeInfo" class="detail"><div class="hint">—</div></div>
+<div class="row"><div class="field"><label>Data</label><input id="editDate" type="date" required></div><div class="field"><label id="editValueLabel">Valor</label><input id="editValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" required placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23"></div></div>
+<div class="field"><label>Descrição</label><input id="editDesc" required></div>
+<div id="editCategoryField" class="field"><label>Categoria</label><select id="editCategory"><option>Alimentação</option><option>Transporte</option><option>Veículo</option><option>Casa</option><option>Saúde</option><option>Pet</option><option>Lazer</option><option>Compras</option><option>Outros</option></select></div>
+<div id="editPaymentField" class="field"><label>Pagamento</label><select id="editPayment"><option>Cartão Itaú</option><option>PIX</option><option>Débito</option><option>Dinheiro</option><option>Outro</option></select></div>
+<div id="editInstallmentsField" class="field hidden"><label>Quantidade de parcelas</label><input id="editInstallments" type="number" min="2" max="48" step="1"></div>
+<div class="field"><label>Observação</label><textarea id="editNote"></textarea></div>
+<div id="editWarning" class="dangerBox hidden">Ao alterar uma compra parcelada, o sistema remove o parcelamento anterior e recria todas as parcelas conforme os novos dados.</div>
+<button class="primary" type="submit">Salvar alterações</button>
+</form></div></dialog>
+
+<dialog id="incomeItemEditDialog"><div class="modal">
+<div class="mhead"><h3>Editar receita</h3><button class="close" onclick="incomeItemEditDialog.close()">×</button></div>
+<form id="incomeItemEditForm" class="mbody">
+  <input id="incomeEditKind" type="hidden">
+  <input id="incomeEditId" type="hidden">
+  <input id="incomeEditRow" type="hidden">
+
+  <div id="incomeEditInfo" class="detail"></div>
+
+  <div id="incomeEditDateField" class="field hidden">
+    <label>Data</label>
+    <input id="incomeEditDate" type="date">
+  </div>
+
+  <div class="field">
+    <label>Descrição</label>
+    <input id="incomeEditDescription">
+  </div>
+
+  <div class="field">
+    <label>Valor</label>
+    <input id="incomeEditValue" type="text" inputmode="decimal" autocomplete="off" data-money="1" placeholder="0,00" title="Digite somente os números. Ex.: 1523 = 15,23">
+  </div>
+
+  <div id="incomeEditNoteField" class="field hidden">
+    <label>Observação</label>
+    <textarea id="incomeEditNote"></textarea>
+  </div>
+
+  <button class="primary" type="submit">Salvar alteração</button>
+</form>
+</div></dialog>
+
+<dialog id="statusDialog"><div class="modal">
+  <div class="mbody">
+    <div id="statusIcon" class="statusIcon ok">✓</div>
+    <h3 id="statusTitle" style="text-align:center;margin:0 0 8px">Concluído</h3>
+    <div id="statusMessage" class="statusMessage">Operação realizada com sucesso.</div>
+    <button class="primary" type="button" style="margin-top:16px" onclick="statusDialog.close()">OK</button>
+  </div>
+</div></dialog>
+
+<dialog id="reserveEditDialog"><div class="modal">
+  <div class="mhead"><h3>Editar reserva</h3><button class="close" type="button" onclick="reserveEditDialog.close()">×</button></div>
+  <form id="reserveEditForm" class="mbody">
+    <input id="reserveEditId" type="hidden">
+    <div class="reserveEditBalance">
+      <div class="hint">Saldo atual</div>
+      <strong id="reserveEditBalance">R$ 0,00</strong>
+    </div>
+    <div class="field">
+      <label>Nome da reserva</label>
+      <input id="reserveEditName" autocomplete="off" maxlength="80" required>
+    </div>
+    <div class="hint" style="margin-bottom:12px">
+      Para alterar o saldo, use Adicionar saldo ou Retirar saldo. Assim o histórico permanece correto.
+    </div>
+    <button class="primary" type="submit">Salvar alteração</button>
+  </form>
+</div></dialog>
+
+<dialog id="invoiceDialog"><div class="modal"><div class="mhead"><h3 id="invoiceDialogTitle">Detalhe da fatura</h3><button class="close" onclick="invoiceDialog.close()">×</button></div><div class="mbody">
+<div class="detail"><div class="line"><span>Gastos fixos</span><b id="detFixed">—</b></div><div class="line"><span>Parcelamentos</span><b id="detInstallments">—</b></div><div class="line"><span>Gastos variáveis</span><b id="detVariable">—</b></div><div class="divider"></div><div class="line"><span><b>Total da fatura</b></span><b id="detTotal" class="amberText">—</b></div></div>
+<div id="detDue" class="hint"></div></div></div></dialog>
+
+<dialog id="settingsDialog"><div class="modal"><div class="mhead"><h3>Conexão</h3><button class="close" onclick="settingsDialog.close()">×</button></div><div class="mbody">
+<div class="field"><label>URL do Apps Script</label><input id="scriptUrl"></div><div class="field"><label>Chave de acesso</label><input id="apiKey" type="password"></div>
+<button class="primary" onclick="saveSettings()">Salvar conexão</button><button class="secondary" style="margin-top:9px" onclick="testConnection()">Testar conexão</button></div></div></dialog>
+
+<dialog id="installDialog"><div class="modal"><div class="mhead"><h3>Adicionar à tela inicial</h3><button class="close" onclick="installDialog.close()">×</button></div><div class="mbody">
+<div id="installInstructions" class="installHint"></div><button class="secondary" style="margin-top:14px" onclick="installDialog.close()">Entendi</button></div></div></dialog>
+
+<div id="toast" class="toast"></div><iframe id="postFrame" name="postFrame" class="hidden"></iframe>
+
+<script>
+const DEFAULT_URL="https://script.google.com/macros/s/AKfycbyhh7ijG8ZTkf73cbNNr4Isg95FdFaacPgKScgd9MK40nqmrYVkvj3imJsTY7tgJ-Y/exec";
+const MONTHS=['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+let state={summary:null,paymentOptions:[],history:[],fixedExpenses:[],incomeItems:[],reserves:[],reserveTotal:0,backendService:'',backendVersion:0}, deferredInstallPrompt=null, summarySeq=0, installmentsLoaded=false, historyLoaded=false;
+const $=id=>document.getElementById(id);
+const expenseDialog=$('expenseDialog'),installmentDialog=$('installmentDialog'),paymentDialog=$('paymentDialog'),fixedDialog=$('fixedDialog'),reserveDialog=$('reserveDialog'),reserveEditDialog=$('reserveEditDialog'),statusDialog=$('statusDialog'),incomeDialog=$('incomeDialog'),incomeItemEditDialog=$('incomeItemEditDialog'),editDialog=$('editDialog'),invoiceDialog=$('invoiceDialog'),settingsDialog=$('settingsDialog'),installDialog=$('installDialog');
+
+function brl(v){if(v===null||v===undefined||v==='')return '—';return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+
+function moneyToNumber(value){
+ const s=String(value??'').trim();
+ if(!s) return 0;
+
+ // Valores produzidos pela máscara usam padrão pt-BR:
+ // 1.234,56 -> 1234.56
+ let clean=s.replace(/\s/g,'').replace(/R\$/gi,'');
+
+ if(clean.includes(',')){
+  clean=clean.replace(/\./g,'').replace(',','.');
+ }else{
+  // Compatibilidade com valores antigos/programáticos como "1234.56".
+  const dotCount=(clean.match(/\./g)||[]).length;
+  if(dotCount>1) clean=clean.replace(/\./g,'');
+ }
+
+ clean=clean.replace(/[^\d.-]/g,'');
+
+ const n=Number(clean);
+ return Number.isFinite(n)?n:0;
+}
+
+function formatMoneyBR(value){
+ const n=
+  typeof value==='number'
+   ? value
+   : moneyToNumber(value);
+
+ return Number(n||0).toLocaleString(
+  'pt-BR',
+  {
+   minimumFractionDigits:2,
+   maximumFractionDigits:2
+  }
+ );
+}
+
+function setMoneyValue(target,value){
+ const el=
+  typeof target==='string'
+   ? $(target)
+   : target;
+
+ if(!el) return;
+
+ if(
+  value===null ||
+  value===undefined ||
+  value===''
+ ){
+  el.value='';
+  return;
+ }
+
+ el.value=formatMoneyBR(value);
+}
+
+function maskMoneyInput(el){
+ if(!el) return;
+
+ const digits=
+  String(el.value||'')
+   .replace(/\D/g,'');
+
+ if(!digits){
+  el.value='';
+  return;
+ }
+
+ // Regra final:
+ // todos os dígitos digitados representam centavos.
+ //
+ // 1    -> 0,01
+ // 10   -> 0,10
+ // 100  -> 1,00
+ // 1000 -> 10,00
+ // 1523 -> 15,23
+ const cents=
+  Number(digits);
+
+ const value=
+  cents / 100;
+
+ el.value=
+  value.toLocaleString(
+   'pt-BR',
+   {
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+   }
+  );
+
+ // Mantém o cursor no final para a digitação seguir natural.
+ const endPos=
+  el.value.length;
+
+ requestAnimationFrame(()=>{
+  try{
+   el.setSelectionRange(
+    endPos,
+    endPos
+   );
+  }catch(_){}
+ });
+}
+
+function setupMoneyInputs(){
+ document
+  .querySelectorAll('input[data-money="1"]')
+  .forEach(el=>{
+   if(el.dataset.moneyReady==='1') return;
+   el.dataset.moneyReady='1';
+
+   el.addEventListener(
+    'input',
+    ()=>maskMoneyInput(el)
+   );
+
+   el.addEventListener(
+    'blur',
+    ()=>{
+     if(el.value.trim()){
+      el.value=
+       formatMoneyBR(
+        moneyToNumber(el.value)
+       );
+     }
+    }
+   );
+
+   // Valores preenchidos pelo próprio sistema continuam
+   // sendo exibidos normalmente no padrão brasileiro.
+   if(el.value.trim()){
+    el.value=
+     formatMoneyBR(
+      moneyToNumber(el.value)
+     );
+   }
+  });
+}
+
+function todayISO(){return new Date().toISOString().slice(0,10)}
+let gfBusyCount=0;
+let gfLastDialogMessage='';
+let gfLastDialogAt=0;
+
+function toast(msg){
+ const text=String(msg||'');
+ if(text&&text===gfLastDialogMessage&&Date.now()-gfLastDialogAt<2500)return;
+ const t=$('toast');
+ t.textContent=text;
+ t.style.display='block';
+ clearTimeout(window.__gfToastTimer);
+ window.__gfToastTimer=setTimeout(()=>t.style.display='none',3000);
+}
+
+function setBusy(on,title='Processando...',text='Aguarde. Não feche esta tela.'){
+ if(on){
+  gfBusyCount++;
+  $('busyTitle').textContent=title;
+  $('busyText').textContent=text;
+  $('busyOverlay').classList.remove('hidden');
+ }else{
+  gfBusyCount=Math.max(0,gfBusyCount-1);
+  if(gfBusyCount===0)$('busyOverlay').classList.add('hidden');
+ }
+}
+
+function showStatusDialog(ok,message,title){
+ gfLastDialogMessage=String(message||'');
+ gfLastDialogAt=Date.now();
+
+ $('statusIcon').className='statusIcon '+(ok?'ok':'err');
+ $('statusIcon').textContent=ok?'✓':'!';
+ $('statusTitle').textContent=title||(ok?'Concluído':'Não foi possível concluir');
+ $('statusMessage').textContent=message||(ok?'Operação realizada com sucesso.':'Ocorreu um erro.');
+
+ try{
+  if(statusDialog.open)statusDialog.close();
+  statusDialog.showModal();
+ }catch(_){}
+
+ if(ok){
+  setTimeout(()=>{
+   try{if(statusDialog.open)statusDialog.close()}catch(_){}
+  },1700);
+ }
+}
+
+function cacheUiData(key,value){
+ try{
+  localStorage.setItem('gf_v24_'+key,JSON.stringify({at:Date.now(),value}));
+ }catch(_){}
+}
+
+function readUiCache(key,maxAgeMs=86400000){
+ try{
+  const raw=localStorage.getItem('gf_v24_'+key);
+  if(!raw)return null;
+  const parsed=JSON.parse(raw);
+  if(!parsed||Date.now()-Number(parsed.at||0)>maxAgeMs)return null;
+  return parsed.value;
+ }catch(_){
+  return null;
+ }
+}
+function cfg(){return {url:localStorage.getItem('gf_url')||DEFAULT_URL,key:localStorage.getItem('gf_key')||''}}
+function requestId(){return 'R'+Date.now().toString(36)+Math.random().toString(36).slice(2,9)}
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function initSelectors(){
+ const d=new Date();
+ for(let y=2026;y<=2036;y++){
+  $('viewYear').add(new Option(y,y));
+  $('fixedYear').add(new Option(y,y));
+  $('incomeYear').add(new Option(y,y));
+ }
+ MONTHS.forEach(m=>{
+  $('viewMonth').add(new Option(m,m));
+  $('fixedMonth').add(new Option(m,m));
+  $('incomeMonth').add(new Option(m,m));
+ });
+ $('viewYear').value=Math.min(2036,Math.max(2026,d.getFullYear()));
+ $('viewMonth').value=MONTHS[d.getMonth()];
+ $('fixedYear').value=$('viewYear').value;
+ $('fixedMonth').value=$('viewMonth').value;
+ $('incomeYear').value=$('viewYear').value;
+ $('incomeMonth').value=$('viewMonth').value;
+ $('viewYear').onchange=async()=>{installmentsLoaded=false;historyLoaded=false;await refreshDashboard(false,false);updateHistoryPeriodHint();if($('historyDetails').open)await loadHistory(true)};
+ $('viewMonth').onchange=async()=>{installmentsLoaded=false;historyLoaded=false;await refreshDashboard(false,false);updateHistoryPeriodHint();if($('historyDetails').open)await loadHistory(true)};
+ $('fixedYear').onchange=()=>loadFixedExpenses();
+ $('fixedMonth').onchange=()=>loadFixedExpenses();
+ $('incomeYear').onchange=()=>loadIncomeItems();
+ $('incomeMonth').onchange=()=>loadIncomeItems();
+ $('payCompetence').onchange=()=>loadPaymentOptionsForSelectedPeriod();$('payCommitment').onchange=updatePayInfo;
+}
+
+function openSettings(){const c=cfg();$('scriptUrl').value=c.url;$('apiKey').value=c.key;settingsDialog.showModal()}
+function saveSettings(){localStorage.setItem('gf_url',$('scriptUrl').value.trim());localStorage.setItem('gf_key',$('apiKey').value.trim());settingsDialog.close();toast('Conexão salva.');refreshSummary()}
+async function testConnection(){try{const r=await jsonp({action:'ping'});toast(r.ok?'Conexão funcionando.':'Falha na conexão.')}catch(e){toast(e.message)}}
+
+function jsonp(params,timeout=12000){
+ return new Promise((resolve,reject)=>{
+  const c=cfg();if(!c.url)return reject(new Error('Configure a URL do Apps Script.'));
+  const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2),s=document.createElement('script');
+  const timer=setTimeout(()=>{cleanup();reject(new Error('Tempo de resposta excedido.'))},timeout);
+  function cleanup(){clearTimeout(timer);delete window[cb];s.remove()}
+  window[cb]=d=>{cleanup();resolve(d)};params.callback=cb;params.key=c.key;params._t=Date.now();s.src=c.url+'?'+new URLSearchParams(params).toString();
+  s.onerror=()=>{cleanup();reject(new Error('Falha de conexão.'))};document.body.appendChild(s);
+ });
+}
+const writeWaiters=new Map();
+
+window.addEventListener('message',e=>{
+ const d=e.data;
+ if(!d||d.source!=='GF_WRITE_RESULT'||!d.requestId)return;
+ const waiter=writeWaiters.get(String(d.requestId));
+ if(waiter)waiter.finish(d.response);
+});
+
+function postAction(action,payload,id){
+ const c=cfg();
+ if(!c.url)throw new Error('Configure a URL do Apps Script.');
+
+ const f=document.createElement('form');
+ f.method='POST';
+ f.action=c.url;
+ f.target='postFrame';
+ f.className='hidden';
+
+ const data={
+  action,
+  key:c.key,
+  requestId:id,
+  transport:'iframe',
+  payload:JSON.stringify(payload)
+ };
+
+ Object.entries(data).forEach(([k,v])=>{
+  const i=document.createElement('input');
+  i.type='hidden';
+  i.name=k;
+  i.value=v;
+  f.appendChild(i);
+ });
+
+ document.body.appendChild(f);
+ f.submit();
+ setTimeout(()=>f.remove(),1200);
+}
+
+async function waitResult(id){
+ for(let i=0;i<3;i++){
+  await new Promise(r=>setTimeout(r,1000));
+  try{
+   const x=await jsonp({action:'status',requestId:id},7000);
+   if(x&&x.ready)return x;
+  }catch(_){}
+ }
+ throw new Error('A gravação foi enviada, mas a confirmação demorou mais que o esperado.');
+}
+
+async function sendWrite(action,payload){
+ const id=requestId();
+
+ setBusy(
+  true,
+  'Salvando...',
+  'Estamos atualizando sua planilha. Evite tocar novamente no botão.'
+ );
+
+ try{
+  const r=await new Promise((resolve,reject)=>{
+   let settled=false;
+   let fallbackTimer=null;
+
+   function finish(result){
+    if(settled)return;
+    settled=true;
+    if(fallbackTimer)clearTimeout(fallbackTimer);
+    writeWaiters.delete(id);
+
+    if(!result||!result.ok){
+     reject(new Error((result&&result.error)||'Falha na gravação.'));
+     return;
+    }
+    resolve(result);
+   }
+
+   writeWaiters.set(id,{finish});
+
+   fallbackTimer=setTimeout(async()=>{
+    try{finish(await waitResult(id))}
+    catch(e){
+     if(!settled){
+      settled=true;
+      writeWaiters.delete(id);
+      reject(e);
+     }
+    }
+   },8000);
+
+   try{postAction(action,payload,id)}
+   catch(e){
+    if(fallbackTimer)clearTimeout(fallbackTimer);
+    writeWaiters.delete(id);
+    reject(e);
+   }
+  });
+
+  const message=r.message||(r.data&&r.data.message)||'Operação realizada com sucesso.';
+  showStatusDialog(true,message);
+  return r;
+
+ }catch(e){
+  showStatusDialog(false,e.message||String(e),'Não foi possível concluir');
+  throw e;
+ }finally{
+  setBusy(false);
+ }
+}
+
+async function refreshSummary(force=false){
+ const year=Number($('viewYear').value),month=$('viewMonth').value;
+ const seq=++summarySeq;
+ const cacheKey='gf_summary_'+year+'_'+month;
+
+ // A interface muda de período imediatamente; evita parecer travada no mês anterior.
+ $('periodLabel').textContent=month+' / '+year+' • atualizando...';
+ $('spendTitle').textContent='Gastos no cartão ('+titleCase(month)+')';
+ if(force) toast('Atualizando dados da planilha...');
+
+ try{
+  const r=await jsonp({action:'summary',year,month,force:force?1:0},10000);
+  if(seq!==summarySeq) return; // ignora respostas antigas que chegaram fora de ordem
+  if(!r.ok) throw new Error(r.error||'Falha ao carregar.');
+
+  state.summary=r.data;
+  localStorage.setItem(cacheKey,JSON.stringify(r.data));
+  renderSummary(r.data);
+ }catch(e){
+  if(seq!==summarySeq) return;
+  const cached=localStorage.getItem(cacheKey);
+  if(cached){
+    const data=JSON.parse(cached);
+    renderSummary(data);
+    $('periodLabel').textContent=data.month+' / '+data.year+' • último valor salvo';
+    toast('Sem resposta da planilha: mostrando somente o cache deste período.');
+  }else if(!cfg().key){
+    openSettings();
+  }else{
+    $('periodLabel').textContent=month+' / '+year+' • erro de atualização';
+    toast(e.message);
+  }
+ }
+}
+
+async function refreshDashboard(force=false,includeHistory=false){
+ const year=Number($('viewYear').value);
+ const month=$('viewMonth').value;
+ const seq=++summarySeq;
+ const cacheKey='gf_summary_'+year+'_'+month;
+
+ if(!force){
+  const cs=readUiCache('summary_'+year+'_'+month);
+  const ci=readUiCache('installments_'+year+'_'+month);
+  const ch=includeHistory?readUiCache('history_'+year+'_'+month):null;
+
+  if(cs){
+   state.summary=cs;
+   renderSummary(cs);
+  }
+  if(Array.isArray(ci)){
+   renderInstallments(ci);
+  }
+  if(includeHistory&&Array.isArray(ch)){
+   state.history=ch;
+   renderHistory(ch);
+  }
+ }
+
+ $('periodLabel').textContent=month+' / '+year+' • atualizando...';
+ $('spendTitle').textContent='Gastos no cartão ('+titleCase(month)+')';
+
+ try{
+  const r=await jsonp({
+   action:'dashboard',
+   year,
+   month,
+   includeHistory:includeHistory?1:0,
+   force:force?1:0
+  },22000);
+
+  if(seq!==summarySeq)return;
+  if(!r.ok)throw new Error(r.error||'Falha ao carregar.');
+
+  const data=r.data||{};
+
+  if(data.summary){
+   state.summary=data.summary;
+   localStorage.setItem(cacheKey,JSON.stringify(data.summary));
+   cacheUiData('summary_'+year+'_'+month,data.summary);
+   renderSummary(data.summary);
+  }
+
+  const inst=data.installments||[];
+  cacheUiData('installments_'+year+'_'+month,inst);
+  renderInstallments(inst);
+  installmentsLoaded=true;
+
+  if(includeHistory&&Array.isArray(data.history)){
+   state.history=data.history;
+   cacheUiData('history_'+year+'_'+month,state.history);
+   renderHistory(state.history);
+   historyLoaded=true;
+   updateHistoryPeriodHint();
+  }
+
+ }catch(e){
+  if(seq!==summarySeq)return;
+
+  const cached=readUiCache('summary_'+year+'_'+month)||
+   (()=>{try{return JSON.parse(localStorage.getItem(cacheKey)||'null')}catch(_){return null}})();
+
+  if(cached){
+   renderSummary(cached);
+   $('periodLabel').textContent=(cached.month||month)+' / '+(cached.year||year)+' • último valor salvo';
+   toast('Conexão lenta: mostrando o último valor salvo enquanto você continua usando o app.');
+  }else if(!cfg().key){
+   openSettings();
+  }else{
+   $('periodLabel').textContent=month+' / '+year+' • erro de atualização';
+   toast(e.message);
+  }
+ }
+}
+
+async function forceRefresh(){
+ const includeHistory=$('historyDetails').open;
+ await refreshDashboard(true,includeHistory);
+ if(includeHistory)updateHistoryPeriodHint();
+}
+
+async function loadInstallments(force=false){
+ if(installmentsLoaded && !force) return;
+ try{
+  const r=await jsonp({action:'installments',year:Number($('viewYear').value),month:$('viewMonth').value,force:force?1:0},12000);
+  if(!r.ok) throw new Error(r.error||'Falha ao carregar parcelamentos.');
+  renderInstallments(r.data||[]);
+  installmentsLoaded=true;
+ }catch(e){
+  if(!installmentsLoaded) $('installmentList').innerHTML='<div class="hint">Parcelamentos serão carregados em seguida. O resumo mensal continua disponível.</div>';
+ }
+}
+
+
+function historyPeriodKey(){
+ return $('viewYear').value+'_'+$('viewMonth').value;
+}
+
+function updateHistoryPeriodHint(){
+ const month=$('viewMonth').value;
+ const year=$('viewYear').value;
+
+ $('historyPeriodHint').textContent=
+  `Somente lançamentos destinados a ${month} / ${year}.`;
+}
+
+async function loadHistory(force=false){
+ if(!$('historyDetails').open && !force)return;
+ if(historyLoaded && !force)return;
+
+ const year=Number($('viewYear').value);
+ const month=$('viewMonth').value;
+ const key='history_'+historyPeriodKey();
+
+ updateHistoryPeriodHint();
+
+ const cached=readUiCache(key);
+
+ if(!force&&Array.isArray(cached)){
+  state.history=cached;
+  renderHistory(cached);
+ }
+
+ if(!Array.isArray(cached)||force){
+  $('historyList').innerHTML=
+   '<div class="hint">Carregando lançamentos deste mês...</div>';
+ }
+
+ try{
+  const r=await jsonp({
+   action:'history',
+   limit:50,
+   year,
+   month,
+   force:force?1:0
+  },18000);
+
+  if(!r.ok){
+   throw new Error(
+    r.error||
+    'Falha ao carregar histórico.'
+   );
+  }
+
+  state.history=r.data||[];
+  cacheUiData(key,state.history);
+  renderHistory(state.history);
+  historyLoaded=true;
+
+ }catch(e){
+  if(!state.history.length){
+   $('historyList').innerHTML=
+    '<div class="hint">Não foi possível carregar o histórico deste mês agora.</div>';
+  }
+
+  if(force)toast(e.message);
+ }
+}
+
+function renderHistory(list){
+ const box=$('historyList');
+ box.innerHTML='';
+
+ $('historyCount').textContent=
+  String((list||[]).length);
+
+ if(!list.length){
+  box.innerHTML=
+   `<div class="hint">Nenhum lançamento destinado a ${esc($('viewMonth').value)} / ${esc($('viewYear').value)}.</div>`;
+  return;
+ }
+
+ list.forEach(x=>{
+  const el=document.createElement('div');
+  el.className='historyItem';
+
+  const parcel=
+   x.type==='COMPRA_PARCELADA'
+    ? ` • ${x.installments}x`
+    : '';
+
+  const inv=
+   x.invoice
+    ? ` • Fatura ${esc(x.invoice)}`
+    : '';
+
+  el.innerHTML=
+   `<div class="historyMain">
+      <strong>
+        ${esc(x.description)}
+        <span class="historyBadge">${esc(x.typeLabel)}</span>
+      </strong>
+      <small>
+        ${formatDateBR(x.date)}
+        ${parcel}
+        ${inv}
+      </small>
+      <div class="historyActions">
+        <button class="smallBtn" onclick="openEditHistory('${escAttr(x.id)}')">Editar</button>
+        <button class="smallBtn danger" onclick="deleteHistoryItem('${escAttr(x.id)}','${escAttr(x.description)}','${escAttr(x.type)}')">Excluir</button>
+      </div>
+    </div>
+    <div class="historyValue">${brl(x.value)}</div>`;
+
+  box.appendChild(el);
+ });
+}
+
+$('historyDetails').addEventListener('toggle',async()=>{
+ if($('historyDetails').open){
+  updateHistoryPeriodHint();
+  await loadHistory(false);
+ }
+});
+
+function formatDateBR(iso){
+ const p=String(iso||'').split('-');
+ return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+}
+function escAttr(s){
+ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
+
+function openEditHistory(id){
+ const x=(state.history||[]).find(v=>String(v.id)===String(id));
+ if(!x){toast('Lançamento não encontrado no histórico.');return}
+
+ $('editId').value=x.id;
+ $('editType').value=x.type;
+ $('editDate').value=x.date||todayISO();
+ $('editDesc').value=x.description||'';
+ setMoneyValue('editValue',Number(x.value||0));
+ $('editCategory').value=x.category||'Outros';
+ $('editPayment').value=x.payment||'Cartão Itaú';
+ $('editInstallments').value=x.installments||2;
+ $('editNote').value=x.note||'';
+
+ const isRevenue=x.type==='RECEITA';
+ const isInstallment=x.type==='COMPRA_PARCELADA';
+
+ $('editCategoryField').classList.toggle('hidden',isRevenue);
+ $('editPaymentField').classList.toggle('hidden',isRevenue||isInstallment);
+ $('editInstallmentsField').classList.toggle('hidden',!isInstallment);
+ $('editWarning').classList.toggle('hidden',!isInstallment);
+ $('editValueLabel').textContent=isInstallment?'Valor total':'Valor';
+
+ $('editTypeInfo').innerHTML=`<div class="line"><span>Tipo</span><b>${esc(x.typeLabel)}</b></div>
+   ${x.invoice?`<div class="line"><span>Fatura atual</span><b>${esc(x.invoice)}</b></div>`:''}`;
+
+ editDialog.showModal();
+}
+
+async function deleteHistoryItem(id,description,type){
+ const isInstallment=type==='COMPRA_PARCELADA';
+ const text=isInstallment
+  ? `Excluir a compra parcelada "${description}"?\\n\\nTodas as parcelas vinculadas serão removidas das faturas e da meta mensal.`
+  : `Excluir o lançamento "${description}"?\\n\\nO valor será removido dos cálculos correspondentes.`;
+
+ if(!confirm(text)) return;
+
+ try{
+  const r=await sendWrite('deleteLaunch',{id});
+  toast(r.message||'Lançamento excluído.');
+  historyLoaded=false;installmentsLoaded=false;
+  await refreshDashboard(true,$('historyDetails').open);
+ }catch(e){
+  toast(e.message);
+ }
+}
+
+$('editForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const b=e.submitter;b.disabled=true;b.textContent='Salvando...';
+
+ try{
+  const type=$('editType').value;
+  const payload={
+   id:$('editId').value,
+   date:$('editDate').value,
+   description:$('editDesc').value.trim(),
+   value:moneyToNumber($('editValue').value),
+   category:$('editCategory').value,
+   payment:$('editPayment').value,
+   installments:Number($('editInstallments').value||0),
+   note:$('editNote').value.trim()
+  };
+
+  const r=await sendWrite('editLaunch',payload);
+  editDialog.close();
+  toast(r.message||'Lançamento atualizado.');
+  historyLoaded=false;installmentsLoaded=false;
+  await refreshDashboard(true,$('historyDetails').open);
+
+ }catch(err){
+  toast(err.message);
+ }finally{
+  b.disabled=false;b.textContent='Salvar alterações';
+ }
+});
+
+function renderSummary(s){
+ const m=s.monthlyControl||{},inv=s.invoice||{};
+ $('periodLabel').textContent=s.month+' / '+s.year;
+ $('spendTitle').textContent='Gastos no cartão ('+titleCase(s.month)+')';$('spendValue').textContent=brl(m.total);$('availableValue').textContent=brl(m.available);$('reserveValue').textContent=brl(s.reserves);
+ $('invoiceTitle').textContent='Fatura a pagar em '+titleCase(inv.month);$('invoiceValue').textContent=brl(inv.total);$('invoiceDue').textContent='Vencimento: '+(inv.dueDate||'—');
+ const used=Math.max(0,Number(m.usedPct||0));$('spendBar').style.width=Math.min(100,used*100)+'%';$('availableBar').style.width=Math.max(0,100-Math.min(100,used*100))+'%';$('spendPct').textContent=(used*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+ const availablePct=m.meta>0?Math.max(0,Number(m.available||0)/Number(m.meta)):0;
+ const availablePct100=availablePct*100;
+ const availableState=availablePct>0.50?'green':(availablePct>=0.20?'amber':'red');
+
+ const availableCard=$('availableCard');
+ availableCard.classList.remove('availableGreen','availableAmber','availableRed');
+
+ if(availableState==='green'){
+  availableCard.classList.add('availableGreen');
+  $('availableValue').className='kvalue greenText';
+  $('availableBar').style.background='var(--green)';
+ }else if(availableState==='amber'){
+  availableCard.classList.add('availableAmber');
+  $('availableValue').className='kvalue amberText';
+  $('availableBar').style.background='var(--amber)';
+ }else{
+  availableCard.classList.add('availableRed');
+  $('availableValue').className='kvalue redText';
+  $('availableBar').style.background='var(--red)';
+ }
+
+ $('availableBar').style.width=Math.min(100,availablePct100)+'%';
+ $('availablePct').textContent=
+  availablePct100.toLocaleString('pt-BR',{maximumFractionDigits:1})+'% disponível';
+
+ $('metaAlert').innerHTML='Meta do cartão em '+String(s.month).toLowerCase()+': <b>'+brl(m.meta)+'</b> • '+(m.available<=0?'<b>limite do mês atingido.</b>':'disponível: <b>'+brl(m.available)+'</b>.');
+
+ $('mFixed').textContent=brl(m.fixed);
+ $('mInstallments').textContent=brl(m.installments);
+ $('mOneOff').textContent=brl(m.oneOff);
+ $('mTotal').textContent=brl(m.total);
+ $('mMeta').textContent=brl(m.meta);
+ $('mAvailable').textContent=brl(m.available);
+
+ if(availableState==='green'){
+  $('mAvailable').className='greenText';
+ }else if(availableState==='amber'){
+  $('mAvailable').className='amberText';
+ }else{
+  $('mAvailable').className='redText';
+ }
+
+ $('mBar').style.width=Math.min(100,used*100)+'%';
+ $('mProgressText').textContent=
+  (used*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+
+  '% utilizado • '+brl(m.total)+' de '+brl(m.meta);
+
+ $('cashEntries').textContent=brl(s.entries);
+ $('cashExpenses').textContent=brl(s.expenses);
+ $('cashResult').textContent=brl(s.result);
+ $('cashResult').className='';
+ const resultCard=$('cashResultCard');
+ resultCard.classList.remove('resultPositive','resultNegative','resultZero');
+ if(Number(s.result)>0){
+  resultCard.classList.add('resultPositive');
+ }else if(Number(s.result)<0){
+  resultCard.classList.add('resultNegative');
+ }else{
+  resultCard.classList.add('resultZero');
+ }
+ $('cashAnnual').textContent=brl(s.annualRevenue);
+ renderCommitments(s.commitments||[]);
+}
+
+function renderInstallments(list){
+ const box=$('installmentList');box.innerHTML='';
+ if(!list.length){box.innerHTML='<div class="hint">Nenhum parcelamento em andamento neste período.</div>';return}
+ list.forEach(x=>{
+  const el=document.createElement('div');el.className='inst';
+  const origem=x.source==='EXISTENTE'?'JÁ CADASTRADA':'HTML';
+  const progress=x.progressText||('Pagas: '+(x.paidInstallments||0)+'/'+x.installments);
+  const remainingLabel=x.remainingLabel||'Saldo restante';
+  const remainingInstallments=
+   Number(
+    x.remainingInstallments===undefined
+     ? Math.max(0,Number(x.installments||0)-Number(x.paidInstallments||0))
+     : x.remainingInstallments
+   );
+
+  el.innerHTML=`<div class="instTop"><strong>${esc(x.description)}</strong><span class="badge">${esc(origem)}</span></div>
+  <small>Total: ${brl(x.total)}<br>
+  Parcelamento: ${x.installments}x • parcela do período: ${brl(x.installmentValue)}<br>
+  <b>Parcelas restantes: ${remainingInstallments}</b><br>
+  ${esc(progress)}<br>
+  ${esc(remainingLabel)}: ${brl(x.remaining)}<br>
+  Última fatura: ${esc(x.lastInvoice)}</small>`;
+  box.appendChild(el);
+ });
+}
+function renderCommitments(list){
+ const box=$('commitments');box.innerHTML='';
+ if(!list.length){box.innerHTML='<div class="hint">Nenhum compromisso com valor previsto neste mês.</div>';return}
+ list.forEach(c=>{const el=document.createElement('div');el.className='commit';el.innerHTML=`<div><strong>${esc(c.name)}</strong><small>Vencimento: ${c.dueDate} • Pago: ${brl(c.paid)}</small></div><div class="right"><b>${brl(c.expected)}</b><br><span class="status ${c.status}">${c.status}</span></div>`;box.appendChild(el)})
+}
+
+function openInvoiceDetails(){const i=state.summary&&state.summary.invoice;if(!i)return;$('invoiceDialogTitle').textContent='Fatura Itaú — '+i.month+' / '+i.year;$('detFixed').textContent=brl(i.fixed);$('detInstallments').textContent=brl(i.installments);$('detVariable').textContent=brl(i.variable);$('detTotal').textContent=brl(i.total);$('detDue').textContent='Vencimento: '+i.dueDate+'.';invoiceDialog.showModal()}
+
+function openExpense(){$('expenseForm').reset();$('expDate').value=todayISO();expenseDialog.showModal()}
+$('expenseForm').addEventListener('submit',async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;b.textContent='Registrando...';try{const r=await sendWrite('expense',{date:$('expDate').value,description:$('expDesc').value.trim(),category:$('expCategory').value,payment:$('expPayment').value,value:moneyToNumber($('expValue').value),note:$('expObs').value.trim()});expenseDialog.close();toast(r.message||'Gasto registrado.');historyLoaded=false;await refreshDashboard(true,$('historyDetails').open)}catch(err){toast(err.message)}finally{b.disabled=false;b.textContent='Registrar gasto'}});
+
+function openInstallment(){$('installmentForm').reset();$('instDate').value=todayISO();$('instCount').value=2;updatePreview();installmentDialog.showModal()}
+function updatePreview(){const total=moneyToNumber($('instTotal').value),n=Number($('instCount').value||0);$('instPreview').innerHTML=total>0&&n>=2?`<div class="line"><span>Valor total da compra</span><b>${brl(total)}</b></div><div class="line"><span>Impacto aproximado por mês</span><b class="greenText">${brl(total/n)}</b></div>`:'<div class="hint">Informe o valor e a quantidade de parcelas.</div>'}
+$('instTotal').oninput=updatePreview;$('instCount').oninput=updatePreview;
+$('installmentForm').addEventListener('submit',async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;b.textContent='Registrando...';try{const r=await sendWrite('installmentPurchase',{date:$('instDate').value,description:$('instDesc').value.trim(),category:$('instCategory').value,totalValue:moneyToNumber($('instTotal').value),installments:Number($('instCount').value)});installmentDialog.close();toast(r.message||'Compra parcelada registrada.');installmentsLoaded=false;historyLoaded=false;await refreshDashboard(true,true)}catch(err){toast(err.message)}finally{b.disabled=false;b.textContent='Registrar compra parcelada'}});
+
+const PAYMENT_LABELS={
+ 'Financiamento do carro':'Financiamento do carro',
+ 'Faculdade':'Faculdade',
+ 'Fatura Itaú':'Cartão Itaú — pagamento da fatura',
+ 'Cartão Itaú':'Cartão Itaú — pagamento da fatura',
+ 'Cartão Inter':'Cartão Inter',
+ 'Outras despesas':'Outras despesas'
+};
+
+function paymentLabel(o){
+ return o?.displayLabel ||
+        o?.label ||
+        PAYMENT_LABELS[o?.commitment] ||
+        o?.commitment ||
+        'Compromisso';
+}
+
+function backendVersionFromService(service){
+ const m=String(service||'').match(/V(\d+)/i);
+ return m?Number(m[1]):0;
+}
+
+function openPayment(){
+ $('paymentForm').reset();
+ $('payDate').value=todayISO();
+
+ // A competência é interface local e deve aparecer imediatamente,
+ // sem depender da resposta do Apps Script.
+ buildPaymentCompetences();
+
+ // Mostra o seletor de compromisso já com a opção manual enquanto
+ // os valores da planilha são carregados.
+ state.paymentOptions=[];
+ renderPaymentCommitments();
+
+ paymentDialog.showModal();
+ loadPaymentOptions();
+}
+
+function buildPaymentCompetences(){
+ const sel=$('payCompetence');
+ const previous=sel.value;
+ sel.innerHTML='';
+
+ for(let year=2026;year<=2036;year++){
+  const firstMonth=year===2026?8:0;
+  for(let m=firstMonth;m<12;m++){
+   const value=`${year}|${MONTHS[m]}`;
+   sel.add(new Option(`${MONTHS[m]} / ${year}`,value));
+  }
+ }
+
+ // Prioriza o período que já está sendo visualizado no aplicativo,
+ // desde que seja SET/2026 ou posterior.
+ let targetYear=Number($('viewYear').value);
+ let targetMonth=$('viewMonth').value;
+ const targetIndex=MONTHS.indexOf(targetMonth);
+
+ if(targetYear<2026||(targetYear===2026&&targetIndex<8)){
+  targetYear=2026;targetMonth='SETEMBRO';
+ }
+
+ const target=`${targetYear}|${targetMonth}`;
+
+ // Se o usuário já escolheu uma competência enquanto o backend carregava,
+ // preserva essa escolha. Caso contrário, usa o período visualizado.
+ if(previous&&[...sel.options].some(o=>o.value===previous)){
+  sel.value=previous;
+ }else if([...sel.options].some(o=>o.value===target)){
+  sel.value=target;
+ }else{
+  sel.value='2026|SETEMBRO';
+ }
+}
+
+async function loadPaymentOptions(){
+ try{
+  // Verifica a versão do backend uma única vez ao abrir.
+  let ping=null;
+  try{
+   ping=await jsonp({action:'ping'},10000);
+   if(ping&&ping.ok){
+    state.backendService=ping.service||'';
+    state.backendVersion=Number(
+      ping.apiVersion ||
+      backendVersionFromService(ping.service)
+    );
+   }
+  }catch(_){}
+
+  const warning=$('payBackendWarning');
+
+  if(state.backendVersion && state.backendVersion<26){
+   warning.classList.remove('hidden');
+   warning.innerHTML=
+     `O Apps Script publicado ainda está em <b>${esc(state.backendService||'versão anterior')}</b>. `+
+     `Publique o Code_V26_PARCELA_PERIODO.gs para carregar diretamente os valores da competência selecionada.`;
+  }else{
+   warning.classList.add('hidden');
+   warning.innerHTML='';
+  }
+
+  await loadPaymentOptionsForSelectedPeriod();
+
+ }catch(e){
+  const warning=$('payBackendWarning');
+  warning.classList.remove('hidden');
+  warning.innerHTML=
+    `Não foi possível carregar os compromissos da planilha. ${esc(e.message||'Falha de comunicação.')}`;
+
+  state.paymentOptions=[];
+  renderPaymentCommitments();
+  toast(e.message);
+ }
+}
+
+async function loadPaymentOptionsForSelectedPeriod(){
+ const period=selectedPaymentPeriod();
+
+ // Enquanto carrega, mantém somente a opção manual e informa o usuário.
+ state.paymentOptions=[];
+ renderPaymentCommitments(true);
+
+ try{
+  const r=await jsonp({
+   action:'paymentOptions',
+   year:period.year,
+   month:period.month
+  },12000);
+
+  if(!r.ok){
+   throw new Error(
+    r.error ||
+    'Falha ao carregar os compromissos.'
+   );
+  }
+
+  state.paymentOptions=(r.data||[]).map(o=>({
+   ...o,
+   label:paymentLabel(o),
+   displayLabel:paymentLabel(o),
+   valueDefined:
+    typeof o.valueDefined==='boolean'
+      ? o.valueDefined
+      : Number(o.expected||0)>0
+  }));
+
+  const warning=$('payBackendWarning');
+
+  // Só remove o aviso se não houver incompatibilidade conhecida de versão.
+  if(!state.backendVersion || state.backendVersion>=26){
+   warning.classList.add('hidden');
+   warning.innerHTML='';
+  }
+
+  renderPaymentCommitments(false);
+
+ }catch(e){
+  const warning=$('payBackendWarning');
+  warning.classList.remove('hidden');
+  warning.innerHTML=
+    `A competência está disponível, mas os valores da planilha não foram carregados. ${esc(e.message||'Falha de comunicação.')}`;
+
+  state.paymentOptions=[];
+  renderPaymentCommitments(false);
+ }
+}
+
+function selectedPaymentPeriod(){
+ const raw=String($('payCompetence').value||'').split('|');
+ return {
+  year:Number(raw[0]||2026),
+  month:raw[1]||'SETEMBRO'
+ };
+}
+
+function renderPaymentCommitments(loading=false){
+ const period=selectedPaymentPeriod();
+ const sel=$('payCommitment');
+ sel.innerHTML='';
+
+ const items=(state.paymentOptions||[]).filter(o=>
+  Number(o.year)===period.year &&
+  o.month===period.month
+ );
+
+ if(loading){
+  const wait=new Option(
+   'Carregando valores da planilha...',
+   '__LOADING__'
+  );
+  wait.disabled=true;
+  sel.add(wait);
+ }
+
+ items.forEach(o=>{
+  const defined=
+   typeof o.valueDefined==='boolean'
+    ? o.valueDefined
+    : Number(o.expected||0)>0;
+
+  const valueText=defined
+   ? brl(o.expected)
+   : 'R$ 0,00 • valor ainda não lançado';
+
+  const option=new Option(
+   `${paymentLabel(o)} • ${valueText}`,
+   o.commitment
+  );
+
+  option.dataset.year=o.year;
+  option.dataset.month=o.month;
+  option.dataset.commitment=o.commitment;
+  option.dataset.label=paymentLabel(o);
+  option.dataset.expected=o.expected;
+  option.dataset.paid=o.paid;
+  option.dataset.remaining=o.remaining;
+  option.dataset.due=o.dueDate;
+  option.dataset.status=o.status;
+  option.dataset.defined=defined?'1':'0';
+
+  sel.add(option);
+ });
+
+ // Sempre disponível.
+ const manual=new Option(
+  '+ Outro item manual',
+  '__MANUAL__'
+ );
+ manual.dataset.manual='1';
+ sel.add(manual);
+
+ // Quando os dados chegaram, seleciona o primeiro compromisso da planilha.
+ if(!loading && items.length){
+  sel.selectedIndex=0;
+ }
+
+ updatePayInfo();
+}
+
+function updatePayInfo(){
+ const sel=$('payCommitment'),o=sel.options[sel.selectedIndex];
+
+ if(!o){
+  $('payInfo').innerHTML='<div class="hint">Nenhum compromisso disponível.</div>';
+  $('payValue').value='';
+  return;
+ }
+
+ if(o.value==='__LOADING__'){
+  $('payManualFields').classList.add('hidden');
+  $('payInfo').innerHTML='<div class="hint">Buscando os valores diretamente da planilha...</div>';
+  $('payValue').value='';
+  return;
+ }
+
+ const manual=o.value==='__MANUAL__';
+ $('payManualFields').classList.toggle('hidden',!manual);
+
+ if(manual){
+  const p=selectedPaymentPeriod();
+  $('payInfo').innerHTML=`<div class="line"><span>Tipo</span><b>Outro item manual</b></div>
+    <div class="line"><span>Competência</span><b>${esc(p.month)} / ${p.year}</b></div>
+    <div class="hint">O valor será incluído em Outras despesas e registrado como pago.</div>`;
+  $('payValue').value='';
+  return;
+ }
+
+ const expected=Number(o.dataset.expected||0);
+ const paid=Number(o.dataset.paid||0);
+ const remaining=Number(o.dataset.remaining||0);
+ const defined=o.dataset.defined==='1';
+
+ $('payInfo').innerHTML=`<div class="line"><span>Compromisso</span><b>${esc(o.dataset.label)}</b></div>
+  <div class="line"><span>Competência</span><b>${esc(o.dataset.month)} / ${esc(o.dataset.year)}</b></div>
+  <div class="line"><span>Previsto</span><b>${defined?brl(expected):'Ainda não fechado'}</b></div>
+  <div class="line"><span>Já pago</span><b>${brl(paid)}</b></div>
+  <div class="line"><span>${defined?'Restante':'Pagamento antecipado'}</span><b>${defined?brl(remaining):'Informe o valor abaixo'}</b></div>
+  <div class="hint">Vencimento de referência: ${o.dataset.due} • ${o.dataset.status}</div>`;
+
+ setMoneyValue('payValue',defined&&remaining>0?remaining:'');
+}
+
+$('paymentForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+
+ const b=e.submitter;
+ b.disabled=true;
+ b.textContent='Confirmando...';
+
+ try{
+  const period=selectedPaymentPeriod();
+  const sel=$('payCommitment');
+  const o=sel.options[sel.selectedIndex];
+
+  if(!o||o.value==='__LOADING__') throw new Error('Aguarde o carregamento dos compromissos.');
+
+  const value=moneyToNumber($('payValue').value);
+  if(!(value>0)) throw new Error('Informe o valor pago.');
+
+  let r;
+
+  if(o.value==='__MANUAL__'){
+   const description=$('payManualDesc').value.trim();
+   if(!description) throw new Error('Informe a descrição do item manual.');
+
+   r=await sendWrite('manualPayment',{
+    year:period.year,
+    month:period.month,
+    description,
+    date:$('payDate').value,
+    value,
+    note:$('payObs').value.trim()
+   });
+
+  }else{
+   r=await sendWrite('payment',{
+    year:period.year,
+    month:period.month,
+    commitment:o.dataset.commitment,
+    date:$('payDate').value,
+    value,
+    note:$('payObs').value.trim()
+   });
+  }
+
+  paymentDialog.close();
+  toast(r.message||'Pagamento registrado.');
+
+  installmentsLoaded=false;
+  await refreshSummary(true);
+  await loadInstallments(true);
+
+ }catch(err){
+  toast(err.message);
+
+ }finally{
+  b.disabled=false;
+  b.textContent='Confirmar pagamento';
+ }
+});
+
+
+function openFixedExpenses(){
+ $('fixedYear').value=$('viewYear').value;
+ $('fixedMonth').value=$('viewMonth').value;
+ $('fixedDesc').value='';
+ $('fixedValue').value='';
+ loadFixedExpenses();
+ fixedDialog.showModal();
+}
+
+async function loadFixedExpenses(){
+ try{
+  const r=await jsonp({
+   action:'fixedExpenses',
+   year:Number($('fixedYear').value),
+   month:$('fixedMonth').value
+  },12000);
+
+  if(!r.ok) throw new Error(r.error||'Falha ao carregar gastos fixos.');
+  state.fixedExpenses=r.data||[];
+  renderFixedExpenses(state.fixedExpenses);
+
+ }catch(e){
+  $('fixedList').innerHTML='<div class="hint">Não foi possível carregar os gastos fixos.</div>';
+  toast(e.message);
+ }
+}
+
+function renderFixedExpenses(list){
+ const box=$('fixedList');box.innerHTML='';
+ if(!list.length){
+  box.innerHTML='<div class="hint">Nenhum gasto fixo ativo nesta competência.</div>';
+  return;
+ }
+
+ list.forEach(x=>{
+  const el=document.createElement('div');el.className='fixedItem';
+  el.innerHTML=`<div><strong>${esc(x.description)}</strong>
+    <small>${brl(x.value)} por mês • início ${esc(x.start)}</small></div>
+    <button class="smallBtn danger" onclick="deleteFixedExpense('${escAttr(x.id)}','${escAttr(x.description)}')">Excluir</button>`;
+  box.appendChild(el);
+ });
+}
+
+async function addFixedExpense(){
+ const description=$('fixedDesc').value.trim();
+ const value=moneyToNumber($('fixedValue').value);
+
+ if(!description){toast('Informe a descrição do gasto fixo.');return}
+ if(!(value>0)){toast('Informe um valor mensal válido.');return}
+
+ try{
+  const r=await sendWrite('addFixedExpense',{
+   description,
+   value,
+   year:Number($('fixedYear').value),
+   month:$('fixedMonth').value
+  });
+
+  toast(r.message||'Gasto fixo adicionado.');
+  $('fixedDesc').value='';$('fixedValue').value='';
+  await loadFixedExpenses();
+  await refreshSummary(true);
+
+ }catch(e){
+  toast(e.message);
+ }
+}
+
+async function deleteFixedExpense(id,description){
+ const period=`${$('fixedMonth').value} / ${$('fixedYear').value}`;
+ if(!confirm(`Excluir "${description}" a partir de ${period}?\\n\\nOs meses anteriores serão preservados.`)) return;
+
+ try{
+  const r=await sendWrite('deleteFixedExpense',{
+   id,
+   year:Number($('fixedYear').value),
+   month:$('fixedMonth').value
+  });
+
+  toast(r.message||'Gasto fixo excluído.');
+  await loadFixedExpenses();
+  await refreshSummary(true);
+
+ }catch(e){
+  toast(e.message);
+ }
+}
+
+
+function openReserves(){
+ $('reserveAddDate').value=todayISO();
+ $('reserveWithdrawDate').value=todayISO();
+ $('reserveNewDate').value=todayISO();
+
+ $('reserveAddValue').value='';
+ $('reserveWithdrawValue').value='';
+ $('reserveNewValue').value='';
+
+ $('reserveAddNote').value='';
+ $('reserveWithdrawNote').value='';
+ $('reserveNewNote').value='';
+
+ $('reserveNewName').value='';
+
+ reserveDialog.showModal();
+ loadReserves();
+}
+
+async function loadReserves(){
+ const box=$('reserveList');
+ const cacheKey='reserves_'+$('viewYear').value+'_'+$('viewMonth').value;
+ const cached=readUiCache(cacheKey);
+
+ if(cached&&Array.isArray(cached.items)){
+  state.reserves=cached.items;
+  state.reserveTotal=Number(cached.total||0);
+  renderReserves();
+  fillReserveSelect();
+  $('reservePeriodInfo').textContent=
+   `Saldo até ${cached.month||$('viewMonth').value} / ${cached.year||$('viewYear').value} • Total: ${brl(state.reserveTotal)}`;
+ }else{
+  box.innerHTML='<div class="hint">Carregando reservas...</div>';
+ }
+
+ try{
+  const r=await jsonp({
+   action:'reserves',
+   year:Number($('viewYear').value),
+   month:$('viewMonth').value
+  },12000);
+
+  if(!r.ok){
+   throw new Error(
+    r.error ||
+    'Falha ao carregar reservas.'
+   );
+  }
+
+  const data=r.data||{};
+  state.reserves=data.items||[];
+  state.reserveTotal=Number(data.total||0);
+  cacheUiData(cacheKey,data);
+
+  $('reservePeriodInfo').textContent=
+   `Saldo até ${data.month||$('viewMonth').value} / ${data.year||$('viewYear').value} • Total: ${brl(state.reserveTotal)}`;
+
+  renderReserves();
+  fillReserveSelect();
+
+ }catch(e){
+  box.innerHTML='<div class="hint">Não foi possível carregar as reservas.</div>';
+  toast(e.message);
+ }
+}
+
+function renderReserves(){
+ const box=$('reserveList');
+ box.innerHTML='';
+
+ if(!(state.reserves||[]).length){
+  box.innerHTML='<div class="hint">Nenhuma reserva disponível.</div>';
+  return;
+ }
+
+ state.reserves.forEach(x=>{
+  const el=document.createElement('div');
+  el.className='reserveItem';
+  const editBtn=x.kind==='STANDARD'
+   ? `<button class="smallBtn" type="button" onclick="editReserveName('${escAttr(x.id)}','${escAttr(x.name)}')">Editar</button>`
+   : '';
+
+  el.innerHTML=`<div>
+      <strong>${esc(x.name)}</strong>
+      <small>${x.kind==='SECURITY'?'Reserva de Segurança • estrutural':'Reserva / objetivo'}</small>
+      <div class="historyActions">${editBtn}</div>
+    </div>
+    <div class="reserveBalance">${brl(x.balance)}</div>`;
+  box.appendChild(el);
+ });
+}
+
+function fillReserveSelect(){
+ const addSel=$('reserveExisting');
+ const withdrawSel=$('reserveWithdrawExisting');
+
+ const addCurrent=addSel.value;
+ const withdrawCurrent=withdrawSel.value;
+
+ addSel.innerHTML='';
+ withdrawSel.innerHTML='';
+
+ (state.reserves||[]).forEach(x=>{
+  const text=
+   `${x.name} • ${brl(x.balance)}`;
+
+  addSel.add(
+   new Option(text,x.id)
+  );
+
+  // Uma reserva zerada continua visível para consulta,
+  // mas não deve ser opção de retirada.
+  if(Number(x.balance||0)>0){
+   withdrawSel.add(
+    new Option(text,x.id)
+   );
+  }
+ });
+
+ if(
+  addCurrent &&
+  [...addSel.options].some(
+   o=>o.value===addCurrent
+  )
+ ){
+  addSel.value=addCurrent;
+ }
+
+ if(
+  withdrawCurrent &&
+  [...withdrawSel.options].some(
+   o=>o.value===withdrawCurrent
+  )
+ ){
+  withdrawSel.value=withdrawCurrent;
+ }
+}
+
+
+function reserveTransactionAffectsSelectedPeriod(dateISO){
+ const m=/^(\d{4})-(\d{2})-\d{2}$/.exec(String(dateISO||''));
+ if(!m)return false;
+
+ const txKey=Number(m[1])*12+(Number(m[2])-1);
+ const selectedKey=Number($('viewYear').value)*12+MONTHS.indexOf($('viewMonth').value);
+
+ return txKey<=selectedKey;
+}
+
+function persistReserveUiCache(){
+ cacheUiData(
+  'reserves_'+$('viewYear').value+'_'+$('viewMonth').value,
+  {
+   year:Number($('viewYear').value),
+   month:$('viewMonth').value,
+   total:state.reserveTotal,
+   items:state.reserves
+  }
+ );
+}
+
+function applyReserveLocalDelta(reserveId,delta,dateISO){
+ if(!reserveTransactionAffectsSelectedPeriod(dateISO))return;
+
+ const item=(state.reserves||[]).find(x=>String(x.id)===String(reserveId));
+
+ if(item){
+  item.balance=Math.max(0,Number(item.balance||0)+Number(delta||0));
+ }
+
+ state.reserveTotal=Math.max(0,Number(state.reserveTotal||0)+Number(delta||0));
+
+ if(state.summary){
+  state.summary.reserves=Math.max(0,Number(state.summary.reserves||0)+Number(delta||0));
+  renderSummary(state.summary);
+ }
+
+ $('reservePeriodInfo').textContent=
+  `Saldo até ${$('viewMonth').value} / ${$('viewYear').value} • Total: ${brl(state.reserveTotal)}`;
+
+ renderReserves();
+ fillReserveSelect();
+ persistReserveUiCache();
+}
+
+function editReserveName(reserveId,currentName){
+ const item=(state.reserves||[]).find(x=>String(x.id)===String(reserveId));
+
+ if(!item){
+  toast('Reserva não encontrada.');
+  return;
+ }
+
+ $('reserveEditId').value=reserveId;
+ $('reserveEditName').value=currentName||item.name||'';
+ $('reserveEditBalance').textContent=brl(item.balance||0);
+
+ reserveEditDialog.showModal();
+
+ setTimeout(()=>{
+  $('reserveEditName').focus();
+  $('reserveEditName').select();
+ },80);
+}
+
+$('reserveEditForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+
+ const reserveId=$('reserveEditId').value;
+ const newName=$('reserveEditName').value.trim();
+ const item=(state.reserves||[]).find(x=>String(x.id)===String(reserveId));
+
+ if(!item){
+  reserveEditDialog.close();
+  toast('Reserva não encontrada.');
+  return;
+ }
+
+ if(!newName){
+  toast('Informe o nome da reserva.');
+  return;
+ }
+
+ if(newName===item.name){
+  reserveEditDialog.close();
+  return;
+ }
+
+ try{
+  await sendWrite('editReserve',{reserveId,newName});
+
+  item.name=newName;
+  item.id='STANDARD|'+newName;
+
+  reserveEditDialog.close();
+  renderReserves();
+  fillReserveSelect();
+  persistReserveUiCache();
+ }catch(_){}
+});
+
+
+async function addReserveBalance(){
+ const reserveId=$('reserveExisting').value;
+ const value=moneyToNumber($('reserveAddValue').value);
+ const date=$('reserveAddDate').value;
+
+ if(!reserveId){
+  toast('Selecione uma reserva.');
+  return;
+ }
+
+ if(!(value>0)){
+  toast('Informe um valor maior que zero.');
+  return;
+ }
+
+ if(!date){
+  toast('Informe a data do aporte.');
+  return;
+ }
+
+ try{
+  const r=await sendWrite('addReserveBalance',{
+   reserveId,
+   date,
+   value,
+   note:$('reserveAddNote').value.trim()
+  });
+
+  $('reserveAddValue').value='';
+  $('reserveAddNote').value='';
+
+  applyReserveLocalDelta(reserveId,value,date);
+
+ }catch(e){
+  toast(e.message);
+ }
+}
+
+
+async function withdrawReserveBalance(){
+ const reserveId=
+  $('reserveWithdrawExisting').value;
+
+ const value=
+  moneyToNumber($('reserveWithdrawValue').value);
+
+ const date=
+  $('reserveWithdrawDate').value;
+
+ if(!reserveId){
+  toast(
+   'Não há reserva com saldo disponível para retirada.'
+  );
+  return;
+ }
+
+ if(!(value>0)){
+  toast(
+   'Informe um valor de retirada maior que zero.'
+  );
+  return;
+ }
+
+ if(!date){
+  toast(
+   'Informe a data da retirada.'
+  );
+  return;
+ }
+
+ const selected=
+  (state.reserves||[]).find(
+   x=>String(x.id)===String(reserveId)
+  );
+
+ if(
+  selected &&
+  value>Number(selected.balance||0)+0.005
+ ){
+  toast(
+   'A retirada não pode ser maior que o saldo de ' +
+   brl(selected.balance||0) + '.'
+  );
+  return;
+ }
+
+ if(
+  !confirm(
+   `Retirar ${brl(value)} de "${selected?.name||'reserva'}"?`
+  )
+ ){
+  return;
+ }
+
+ try{
+  const r=await sendWrite(
+   'withdrawReserveBalance',
+   {
+    reserveId,
+    date,
+    value,
+    note:
+     $('reserveWithdrawNote')
+      .value.trim()
+   }
+  );
+
+  $('reserveWithdrawValue').value='';
+  $('reserveWithdrawNote').value='';
+
+  applyReserveLocalDelta(reserveId,-value,date);
+
+ }catch(e){
+  toast(e.message);
+ }
+}
+
+
+async function createReserve(){
+ const name=$('reserveNewName').value.trim();
+ const date=$('reserveNewDate').value;
+ const value=moneyToNumber($('reserveNewValue').value);
+
+ if(!name){
+  toast('Informe o nome da nova reserva.');
+  return;
+ }
+
+ if(!date){
+  toast('Informe a data de início.');
+  return;
+ }
+
+ if(value<0){
+  toast('O saldo inicial não pode ser negativo.');
+  return;
+ }
+
+ try{
+  const r=await sendWrite('createReserve',{
+   name,
+   date,
+   value,
+   note:$('reserveNewNote').value.trim()
+  });
+
+  const affects=reserveTransactionAffectsSelectedPeriod(date);
+
+  state.reserves.push({
+   id:'STANDARD|'+name,
+   name,
+   balance:affects?value:0,
+   kind:'STANDARD',
+   editable:true
+  });
+
+  if(affects){
+   state.reserveTotal=Number(state.reserveTotal||0)+value;
+
+   if(state.summary){
+    state.summary.reserves=Number(state.summary.reserves||0)+value;
+    renderSummary(state.summary);
+   }
+  }
+
+  $('reserveNewName').value='';
+  $('reserveNewValue').value='';
+  $('reserveNewNote').value='';
+
+  $('reservePeriodInfo').textContent=
+   `Saldo até ${$('viewMonth').value} / ${$('viewYear').value} • Total: ${brl(state.reserveTotal)}`;
+
+  renderReserves();
+  fillReserveSelect();
+  persistReserveUiCache();
+
+ }catch(e){
+  toast(e.message);
+ }
+}
+
+function openIncome(){
+ $('incomeForm').reset();
+ $('incDate').value=todayISO();
+
+ $('incomeYear').value=$('viewYear').value;
+ $('incomeMonth').value=$('viewMonth').value;
+
+ incomeDialog.showModal();
+ loadIncomeItems();
+}
+
+async function loadIncomeItems(){
+ const box=$('incomeHistoryList');
+ box.innerHTML='<div class="hint">Carregando receitas da planilha...</div>';
+
+ try{
+  const r=await jsonp({
+   action:'incomeItems',
+   year:Number($('incomeYear').value),
+   month:$('incomeMonth').value
+  },12000);
+
+  if(!r.ok){
+   throw new Error(
+    r.error ||
+    'Falha ao carregar receitas.'
+   );
+  }
+
+  state.incomeItems=r.data||[];
+  renderIncomeItems();
+
+ }catch(e){
+  box.innerHTML=
+   '<div class="hint">Não foi possível carregar as receitas desta competência.</div>';
+  toast(e.message);
+ }
+}
+
+function renderIncomeItems(){
+ const box=$('incomeHistoryList');
+ const list=state.incomeItems||[];
+
+ box.innerHTML='';
+
+ if(!list.length){
+  box.innerHTML=
+   '<div class="hint">Nenhuma receita com valor nesta competência.</div>';
+  return;
+ }
+
+ list.forEach(x=>{
+  const el=document.createElement('div');
+  el.className='historyItem';
+
+  const source=x.kind==='APP'
+   ? 'APP'
+   : 'PLANILHA';
+
+  const detail=x.date
+   ? formatDateBR(x.date)
+   : `${esc(x.month)} / ${x.year}`;
+
+  el.innerHTML=`<div class="historyMain">
+      <strong>${esc(x.description)}<span class="historyBadge">${source}</span></strong>
+      <small>${detail}${x.note?` • ${esc(x.note)}`:''}</small>
+      <div class="historyActions">
+        <button class="smallBtn" type="button" onclick="openIncomeItemEdit('${escAttr(x.key)}')">Editar</button>
+      </div>
+    </div>
+    <div class="historyValue greenText">${brl(x.value)}</div>`;
+
+  box.appendChild(el);
+ });
+}
+
+function openIncomeItemEdit(key){
+ const x=(state.incomeItems||[]).find(
+  v=>String(v.key)===String(key)
+ );
+
+ if(!x){
+  toast('Receita não encontrada.');
+  return;
+ }
+
+ $('incomeEditKind').value=x.kind||'';
+ $('incomeEditId').value=x.id||'';
+ $('incomeEditRow').value=x.row||'';
+
+ $('incomeEditDescription').value=x.description||'';
+ setMoneyValue('incomeEditValue',Number(x.value||0));
+ $('incomeEditDate').value=x.date||todayISO();
+ $('incomeEditNote').value=x.note||'';
+
+ const isApp=x.kind==='APP';
+
+ $('incomeEditDateField').classList.toggle(
+  'hidden',
+  !isApp
+ );
+
+ $('incomeEditNoteField').classList.toggle(
+  'hidden',
+  !isApp
+ );
+
+ $('incomeEditDescription').readOnly=!isApp;
+
+ $('incomeEditInfo').innerHTML=
+  `<div class="line"><span>Competência</span><b>${esc(x.month)} / ${x.year}</b></div>`+
+  `<div class="line"><span>Origem</span><b>${isApp?'Aplicativo':'Planilha'}</b></div>`;
+
+ incomeItemEditDialog.showModal();
+}
+
+$('incomeItemEditForm').addEventListener(
+ 'submit',
+ async e=>{
+  e.preventDefault();
+
+  const b=e.submitter;
+  b.disabled=true;
+  b.textContent='Salvando...';
+
+  try{
+   const r=await sendWrite(
+    'editIncomeItem',
+    {
+     kind:$('incomeEditKind').value,
+     id:$('incomeEditId').value,
+     row:Number(
+      $('incomeEditRow').value||0
+     ),
+     year:Number(
+      $('incomeYear').value
+     ),
+     month:$('incomeMonth').value,
+     date:$('incomeEditDate').value,
+     description:
+      $('incomeEditDescription').value.trim(),
+     value:moneyToNumber($('incomeEditValue').value),
+     note:
+      $('incomeEditNote').value.trim()
+    }
+   );
+
+   incomeItemEditDialog.close();
+   toast(
+    r.message ||
+    'Receita atualizada.'
+   );
+
+   historyLoaded=false;
+
+   await refreshSummary(true);
+   await loadIncomeItems();
+
+   if($('historyDetails').open){
+    await loadHistory(true);
+   }
+
+  }catch(err){
+   toast(err.message);
+  }finally{
+   b.disabled=false;
+   b.textContent='Salvar alteração';
+  }
+ }
+);
+
+$('incomeForm').addEventListener(
+ 'submit',
+ async e=>{
+  e.preventDefault();
+
+  const b=e.submitter;
+  b.disabled=true;
+  b.textContent='Registrando...';
+
+  try{
+   const r=await sendWrite(
+    'otherIncome',
+    {
+     date:$('incDate').value,
+     description:
+      $('incDesc').value.trim(),
+     value:moneyToNumber($('incValue').value),
+     note:
+      $('incObs').value.trim()
+    }
+   );
+
+   toast(
+    r.message ||
+    'Receita registrada.'
+   );
+
+   historyLoaded=false;
+
+   await refreshSummary(true);
+
+   if($('historyDetails').open){
+    await loadHistory(true);
+   }
+
+   $('incomeForm').reset();
+   $('incDate').value=todayISO();
+
+   await loadIncomeItems();
+
+  }catch(err){
+   toast(err.message);
+  }finally{
+   b.disabled=false;
+   b.textContent='Registrar receita';
+  }
+ }
+);
+
+
+function titleCase(s){s=String(s||'').toLowerCase();return s.charAt(0).toUpperCase()+s.slice(1)}
+
+// Instalação PWA
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('installBtn').style.display='inline-block'});
+$('installBtn').addEventListener('click',async()=>{
+ if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){toast('O app já está instalado na tela inicial.');return}
+ if(deferredInstallPrompt){deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;return}
+ const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+ $('installInstructions').innerHTML=ios
+  ? '<b>iPhone/iPad:</b><br>1. Abra este site no Safari.<br>2. Toque no botão <b>Compartilhar</b>.<br>3. Escolha <b>Adicionar à Tela de Início</b>.<br>4. Confirme em <b>Adicionar</b>.'
+  : '<b>Android:</b><br>Abra o menu do navegador (⋮) e escolha <b>Adicionar à tela inicial</b> ou <b>Instalar app</b>.';
+ installDialog.showModal();
+});
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+
+window.addEventListener('load',()=>{setupMoneyInputs();initSelectors();buildPaymentCompetences();$('expDate').value=$('instDate').value=$('payDate').value=$('incDate').value=todayISO();if(cfg().key){updateHistoryPeriodHint();refreshDashboard(false,false);}else openSettings()});
+</script>
+</body>
+</html>
